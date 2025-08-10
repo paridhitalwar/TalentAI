@@ -187,7 +187,7 @@ export default function RecruiterDashboard() {
       
       {/* Hero Section */}
       <section className="pt-32 pb-16 bg-gradient-to-br from-violet-600 via-purple-600 to-indigo-600 relative overflow-hidden">
-        <div className="absolute inset-0 bg-[url('data:image/svg+xml,%3Csvg width="60" height="60" viewBox="0 0 60 60" xmlns="http://www.w3.org/2000/svg"%3E%3Cg fill="none" fill-rule="evenodd"%3E%3Cg fill="%23ffffff" fill-opacity="0.1"%3E%3Ccircle cx="30" cy="30" r="2"/%3E%3C/g%3E%3C/g%3E%3C/svg%3E')] opacity-20"></div>
+        <div className="absolute inset-0 bg-white/10"></div>
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 relative z-10">
           <div className="text-center">
             <div className="flex items-center justify-center mb-4">
@@ -221,7 +221,6 @@ export default function RecruiterDashboard() {
             {[
               { id: 'swipe', label: 'Swipe Candidates', icon: Users },
               { id: 'funnel', label: 'Funnel View', icon: BarChart3 },
-              { id: 'jobs', label: 'Job Postings', icon: Briefcase },
               { id: 'liked', label: 'Liked Candidates', icon: Heart }
             ].map((tab) => (
               <button
@@ -307,68 +306,7 @@ export default function RecruiterDashboard() {
             <FunnelView candidates={mockCandidates} />
           )}
 
-          {activeTab === 'jobs' && (
-            <div className="bg-white/80 backdrop-blur-sm rounded-3xl shadow-xl border border-white/20">
-              <div className="p-8 border-b border-gray-100">
-                <div className="flex items-center justify-between">
-                  <div>
-                    <h2 className="text-3xl font-black text-gray-900">Job Postings</h2>
-                    <p className="text-gray-600 font-medium">Manage your active job listings</p>
-                  </div>
-                  <button className="bg-gradient-to-r from-violet-600 to-purple-600 text-white px-6 py-3 rounded-xl hover:from-violet-700 hover:to-purple-700 transition-all duration-300 font-bold flex items-center transform hover:scale-105">
-                    <Plus className="w-5 h-5 mr-2" />
-                    Post New Job
-                  </button>
-                </div>
-              </div>
-              
-              <div className="p-8">
-                <div className="space-y-4">
-                  {mockJobPostings.map((job) => (
-                    <div key={job.id} className="flex items-center justify-between p-6 bg-gray-50 rounded-2xl hover:bg-gray-100 transition-colors">
-                      <div className="flex-1">
-                        <div className="flex items-center gap-4">
-                          <div className="w-12 h-12 bg-gradient-to-br from-violet-500 to-purple-600 rounded-xl flex items-center justify-center">
-                            <Building className="w-6 h-6 text-white" />
-                          </div>
-                          <div>
-                            <h3 className="text-xl font-bold text-gray-900">{job.title}</h3>
-                            <p className="text-gray-600 font-medium">{job.company}</p>
-                            <div className="flex items-center gap-4 mt-2 text-sm">
-                              <span className="flex items-center">
-                                <MapPin className="w-4 h-4 mr-1 text-violet-500" />
-                                {job.location}
-                              </span>
-                              <span className="text-gray-500">{job.type}</span>
-                              <span className="text-gray-500">{job.salary}</span>
-                            </div>
-                          </div>
-                        </div>
-                      </div>
-                      
-                      <div className="text-right">
-                        <div className="flex items-center gap-2 mb-2">
-                          <span className="text-sm text-gray-600">{job.applicants} applicants</span>
-                          <span className={`px-3 py-1 rounded-full text-xs font-bold ${getStatusColor(job.status)}`}>
-                            {job.status}
-                          </span>
-                        </div>
-                        <div className="text-sm text-gray-500">Posted {job.posted}</div>
-                        <div className="flex gap-2 mt-3">
-                          <button className="px-4 py-2 text-sm border border-gray-300 rounded-lg hover:bg-gray-50 transition-colors font-medium">
-                            Edit
-                          </button>
-                          <button className="px-4 py-2 text-sm bg-violet-600 text-white rounded-lg hover:bg-violet-700 transition-colors font-medium">
-                            View Applicants
-                          </button>
-                        </div>
-                      </div>
-                    </div>
-                  ))}
-                </div>
-              </div>
-            </div>
-          )}
+
 
           {activeTab === 'liked' && (
             <div className="bg-white/80 backdrop-blur-sm rounded-3xl shadow-xl border border-white/20">

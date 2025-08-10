@@ -303,3 +303,4 @@ userSchema.statics.findActive = function() {
 };
 
 module.exports = mongoose.model('User', userSchema);
+

@@ -13,6 +13,9 @@ const jobRoutes = require('./routes/jobs');
 const matchingRoutes = require('./routes/matching');
 const evaluationRoutes = require('./routes/evaluation');
 const gameRoutes = require('./routes/games');
+const applicationRoutes = require('./routes/applications');
+const challengeRoutes = require('./routes/challenges');
+const meetingRoutes = require('./routes/meetings');
 
 // Import AI services
 const { parseResume } = require('./services/resumeParser');
@@ -50,6 +53,9 @@ app.use('/api/jobs', jobRoutes);
 app.use('/api/matching', matchingRoutes);
 app.use('/api/evaluation', evaluationRoutes);
 app.use('/api/games', gameRoutes);
+app.use('/api/applications', applicationRoutes);
+app.use('/api/challenges', challengeRoutes);
+app.use('/api/meetings', meetingRoutes);
 
 // Health check
 app.get('/api/health', (req, res) => {

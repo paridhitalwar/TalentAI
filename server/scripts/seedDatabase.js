@@ -7,6 +7,8 @@ require('dotenv').config({ path: path.join(__dirname, '../.env') });
 const User = require('../models/User');
 const Candidate = require('../models/Candidate');
 const Job = require('../models/Job');
+const Challenge = require('../models/Challenge');
+const Application = require('../models/Application');
 
 // Import database connection
 const database = require('../config/database');
@@ -326,27 +328,207 @@ function generateUsers() {
     emailVerified: true
   });
   
-  // Recruiter users
-  for (let i = 0; i < 10; i++) {
-    const company = sampleCompanies[Math.floor(Math.random() * sampleCompanies.length)];
-    users.push({
-      email: `recruiter${i + 1}@${company.toLowerCase().replace(/[^a-z]/g, '')}.com`,
-      password: 'recruiter123',
-      name: `Recruiter ${i + 1}`,
-      role: 'recruiter',
-      company: {
-        name: company,
-        position: 'Senior Recruiter',
-        department: 'Talent Acquisition',
-        verified: true
-      },
-      permissions: ['view_candidates', 'view_jobs', 'create_jobs', 'manage_applications'],
-      status: 'active',
-      emailVerified: true
-    });
-  }
+  // Dummy user account
+  users.push({
+    email: 'user@example.com',
+    password: 'user123',
+    name: 'John Doe',
+    role: 'candidate',
+    permissions: ['view_profile', 'edit_profile', 'view_jobs', 'apply_jobs', 'view_applications', 'take_assessments'],
+    status: 'active',
+    emailVerified: true
+  });
+  
+  // Recruiter account
+  users.push({
+    email: 'recruiter@techcorp.com',
+    password: 'recruiter123',
+    name: 'Sarah Johnson',
+    role: 'recruiter',
+    company: {
+      name: 'TechCorp AI',
+      position: 'Senior Recruiter',
+      department: 'Talent Acquisition',
+      verified: true
+    },
+    permissions: ['view_candidates', 'view_jobs', 'create_jobs', 'manage_applications'],
+    status: 'active',
+    emailVerified: true
+  });
   
   return users;
+}
+
+// Generate single active challenge
+function generateActiveChallenge() {
+  return {
+    title: 'Machine Learning Model Optimization Challenge',
+    description: 'Implement an efficient machine learning model that can process large datasets while maintaining high accuracy and low latency.',
+    type: 'coding',
+    difficulty: 'medium',
+    problem: {
+      statement: `You are given a dataset of customer transactions and need to build a machine learning model to predict fraudulent transactions. The model should:
+1. Achieve at least 95% accuracy
+2. Process 10,000 transactions per second
+3. Use no more than 2GB of memory
+4. Be production-ready with proper error handling
+
+The dataset contains features like transaction amount, location, time, merchant category, and historical behavior patterns.`,
+      examples: [
+        {
+          input: 'Sample transaction data with features',
+          output: 'Prediction: 0 (legitimate) or 1 (fraudulent)',
+          explanation: 'Model should return binary classification with confidence score'
+        }
+      ],
+      constraints: [
+        'Maximum model size: 100MB',
+        'Maximum training time: 30 minutes',
+        'Must handle missing values gracefully',
+        'Must provide confidence scores for predictions'
+      ],
+      notes: 'Focus on both accuracy and efficiency. Consider using techniques like feature engineering, model compression, and efficient algorithms.'
+    },
+    requirements: {
+      languages: ['Python', 'JavaScript', 'Java', 'C++'],
+      frameworks: ['TensorFlow', 'PyTorch', 'Scikit-learn'],
+      timeLimit: 120, // 2 hours
+      memoryLimit: 2048, // 2GB
+      submissionFormat: 'GitHub repository with README and requirements.txt'
+    },
+    testCases: [
+      {
+        input: '{"amount": 150.00, "location": "New York", "merchant": "electronics", "time": "2024-01-15T14:30:00Z"}',
+        expectedOutput: '{"prediction": 0, "confidence": 0.95}',
+        isHidden: false,
+        weight: 1
+      },
+      {
+        input: '{"amount": 2500.00, "location": "Unknown", "merchant": "jewelry", "time": "2024-01-15T02:15:00Z"}',
+        expectedOutput: '{"prediction": 1, "confidence": 0.87}',
+        isHidden: false,
+        weight: 1
+      }
+    ],
+    template: {
+      python: `import pandas as pd
+import numpy as np
+from sklearn.model_selection import train_test_split
+from sklearn.ensemble import RandomForestClassifier
+import joblib
+
+def load_data():
+    # Load your dataset here
+    pass
+
+def preprocess_data(data):
+    # Preprocess your data here
+    pass
+
+def train_model(X_train, y_train):
+    # Train your model here
+    pass
+
+def predict_fraud(transaction_data):
+    # Implement your prediction logic here
+    pass
+
+if __name__ == "__main__":
+    # Your main execution code here
+    pass`,
+      javascript: `// JavaScript template for Node.js implementation
+const tf = require('@tensorflow/tfjs-node');
+
+async function loadData() {
+    // Load your dataset here
+}
+
+async function preprocessData(data) {
+    // Preprocess your data here
+}
+
+async function trainModel(XTrain, yTrain) {
+    // Train your model here
+}
+
+async function predictFraud(transactionData) {
+    // Implement your prediction logic here
+}
+
+// Main execution
+async function main() {
+    // Your main execution code here
+}`,
+      java: `import java.util.*;
+import org.apache.spark.ml.classification.RandomForestClassifier;
+
+public class FraudDetectionModel {
+    
+    public static void loadData() {
+        // Load your dataset here
+    }
+    
+    public static void preprocessData() {
+        // Preprocess your data here
+    }
+    
+    public static void trainModel() {
+        // Train your model here
+    }
+    
+    public static Map<String, Object> predictFraud(Map<String, Object> transactionData) {
+        // Implement your prediction logic here
+        return new HashMap<>();
+    }
+    
+    public static void main(String[] args) {
+        // Your main execution code here
+    }
+}`,
+      cpp: `#include <iostream>
+#include <vector>
+#include <map>
+#include <string>
+
+class FraudDetectionModel {
+private:
+    // Your model parameters here
+    
+public:
+    void loadData() {
+        // Load your dataset here
+    }
+    
+    void preprocessData() {
+        // Preprocess your data here
+    }
+    
+    void trainModel() {
+        // Train your model here
+    }
+    
+    std::map<std::string, double> predictFraud(std::map<std::string, double> transactionData) {
+        // Implement your prediction logic here
+        return std::map<std::string, double>();
+    }
+};
+
+int main() {
+    // Your main execution code here
+    return 0;
+}`
+    },
+    evaluation: {
+      correctness: { weight: 60 },
+      efficiency: { weight: 20 },
+      codeQuality: { weight: 20 },
+      timeBonus: { enabled: true, maxBonus: 10 }
+    },
+    status: 'active',
+    isActive: true,
+    tags: ['machine-learning', 'optimization', 'fraud-detection', 'production-ready'],
+    categories: ['coding', 'ml', 'optimization']
+  };
 }
 
 // Main seeding function
@@ -362,6 +544,8 @@ async function seedDatabase() {
     await User.deleteMany({});
     await Candidate.deleteMany({});
     await Job.deleteMany({});
+    await Challenge.deleteMany({});
+    await Application.deleteMany({});
     
     // Generate and insert users
     console.log('👥 Creating users...');
@@ -369,14 +553,29 @@ async function seedDatabase() {
     const createdUsers = await User.insertMany(users);
     console.log(`✅ Created ${createdUsers.length} users`);
     
-    // Generate and insert candidates
-    console.log('👨‍💼 Creating candidates...');
+    // Generate and insert 100k virtual candidates
+    console.log('👨‍💼 Creating 100,000 virtual candidates...');
     const candidates = [];
-    for (let i = 0; i < 120; i++) {
+    const batchSize = 1000;
+    
+    for (let i = 0; i < 100000; i++) {
       candidates.push(generateCandidate(i));
+      
+      // Insert in batches to avoid memory issues
+      if (candidates.length >= batchSize) {
+        await Candidate.insertMany(candidates);
+        console.log(`✅ Created ${i + 1} candidates`);
+        candidates.length = 0; // Clear array
+      }
     }
-    const createdCandidates = await Candidate.insertMany(candidates);
-    console.log(`✅ Created ${createdCandidates.length} candidates`);
+    
+    // Insert remaining candidates
+    if (candidates.length > 0) {
+      await Candidate.insertMany(candidates);
+    }
+    
+    const totalCandidates = await Candidate.countDocuments();
+    console.log(`✅ Created ${totalCandidates} total candidates`);
     
     // Generate and insert jobs
     console.log('💼 Creating jobs...');
@@ -384,21 +583,35 @@ async function seedDatabase() {
     const createdJobs = await Job.insertMany(jobs);
     console.log(`✅ Created ${createdJobs.length} jobs`);
     
+    // Generate and insert single active challenge
+    console.log('🎯 Creating single active challenge...');
+    const challengeData = generateActiveChallenge();
+    const challenge = new Challenge(challengeData);
+    await challenge.save();
+    console.log(`✅ Created active challenge: ${challenge.title}`);
+    
     // Update candidate users with candidate profiles
     console.log('🔗 Linking candidates to users...');
     const candidateUsers = createdUsers.filter(u => u.role === 'candidate');
-    for (let i = 0; i < Math.min(candidateUsers.length, createdCandidates.length); i++) {
+    const realCandidates = await Candidate.find().limit(candidateUsers.length);
+    
+    for (let i = 0; i < Math.min(candidateUsers.length, realCandidates.length); i++) {
       await User.findByIdAndUpdate(candidateUsers[i]._id, {
-        'candidate.id': createdCandidates[i]._id.toString(),
-        'candidate.profile': createdCandidates[i]._id
+        'candidate.id': realCandidates[i]._id.toString(),
+        'candidate.profile': realCandidates[i]._id
       });
     }
     
     console.log('🎉 Database seeding completed successfully!');
     console.log(`📊 Summary:`);
-    console.log(`   - Users: ${createdUsers.length}`);
-    console.log(`   - Candidates: ${createdCandidates.length}`);
+    console.log(`   - Users: ${createdUsers.length} (1 admin, 1 user, 1 recruiter)`);
+    console.log(`   - Virtual Candidates: ${totalCandidates.toLocaleString()}`);
     console.log(`   - Jobs: ${createdJobs.length}`);
+    console.log(`   - Active Challenge: 1`);
+    console.log(`\n🔑 Login Credentials:`);
+    console.log(`   - Admin: admin@talentai.com / admin123`);
+    console.log(`   - User: user@example.com / user123`);
+    console.log(`   - Recruiter: recruiter@techcorp.com / recruiter123`);
     
     // Disconnect from database
     await database.disconnect();
@@ -415,4 +628,5 @@ if (require.main === module) {
   seedDatabase();
 }
 
-module.exports = { seedDatabase, generateCandidate, generateJobs, generateUsers };
+module.exports = { seedDatabase, generateCandidate, generateJobs, generateUsers, generateActiveChallenge };
+

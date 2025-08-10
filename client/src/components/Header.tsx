@@ -50,10 +50,6 @@ const Header = () => {
   }
 
   const navigation = [
-    { name: 'Jobs', href: '/jobs' },
-    { name: 'Candidates', href: '/candidates' },
-    { name: 'Challenges', href: '/challenges' },
-    { name: 'Games', href: '/games' },
     { name: 'About', href: '/about' },
   ]
 

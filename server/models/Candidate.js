@@ -230,3 +230,4 @@ candidateSchema.methods.getTopSkills = function(limit = 5) {
 };
 
 module.exports = mongoose.model('Candidate', candidateSchema);
+

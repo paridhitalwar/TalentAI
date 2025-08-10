@@ -15,6 +15,12 @@ interface Candidate {
   matchScore: number
   company: string
   education: string
+  avatar: string
+  stage: string
+  personalityScore: number | null
+  codeBattleScore: number | null
+  gameScore: number | null
+  interviewBooked: boolean
 }
 
 interface AnimatedSwipeProps {
@@ -159,3 +165,6 @@ export default function AnimatedSwipe({
     </div>
   )
 }
+
+
+

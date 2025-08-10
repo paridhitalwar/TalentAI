@@ -1,12 +1,7 @@
 {
-  "/_not-found": "app/_not-found.js",
-  "/about/page": "app/about/page.js",
-  "/candidates/page": "app/candidates/page.js",
-  "/candidate-dashboard/page": "app/candidate-dashboard/page.js",
-  "/challenges/page": "app/challenges/page.js",
-  "/games/page": "app/games/page.js",
-  "/jobs/page": "app/jobs/page.js",
-  "/page": "app/page.js",
   "/recruiter-dashboard/page": "app/recruiter-dashboard/page.js",
-  "/register/page": "app/register/page.js"
+  "/page": "app/page.js",
+  "/signin/page": "app/signin/page.js",
+  "/register/page": "app/register/page.js",
+  "/games/page": "app/games/page.js"
 }

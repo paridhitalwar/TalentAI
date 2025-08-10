@@ -131,3 +131,6 @@ export default function FunnelView({ candidates }: FunnelViewProps) {
     </div>
   )
 }
+
+
+

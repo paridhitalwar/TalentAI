@@ -3,191 +3,352 @@
 import { useState } from 'react'
 import { 
   UserPlus, 
+  Mail, 
+  Lock, 
+  User, 
   Building, 
-  UserCheck, 
+  UserCheck,
+  Eye,
+  EyeOff,
   ArrowRight,
-  Sparkles,
-  CheckCircle
+  Sparkles
 } from 'lucide-react'
-import Header from '@/components/Header'
-import Footer from '@/components/Footer'
+import Link from 'next/link'
 import { useRouter } from 'next/navigation'
 
 export default function RegisterPage() {
-  const [userType, setUserType] = useState<'recruiter' | 'candidate' | null>(null)
-  const [step, setStep] = useState(1)
+  const [formData, setFormData] = useState({
+    name: '',
+    email: '',
+    password: '',
+    confirmPassword: '',
+    role: 'candidate' as 'candidate' | 'recruiter'
+  })
+  const [showPassword, setShowPassword] = useState(false)
+  const [showConfirmPassword, setShowConfirmPassword] = useState(false)
+  const [isLoading, setIsLoading] = useState(false)
+  const [errors, setErrors] = useState<Record<string, string>>({})
   const router = useRouter()
 
-  const handleUserTypeSelect = (type: 'recruiter' | 'candidate') => {
-    setUserType(type)
-    setStep(2)
-  }
-
-  const handleContinue = () => {
-    if (userType === 'recruiter') {
-      router.push('/recruiter-dashboard')
-    } else if (userType === 'candidate') {
-      router.push('/candidate-dashboard')
+  const handleInputChange = (e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>) => {
+    const { name, value } = e.target
+    setFormData(prev => ({
+      ...prev,
+      [name]: value
+    }))
+    // Clear error when user starts typing
+    if (errors[name]) {
+      setErrors(prev => ({
+        ...prev,
+        [name]: ''
+      }))
     }
   }
 
-  const benefits = {
-    recruiter: [
-      'Access to top AI talent pool',
-      'Intelligent candidate matching',
-      'Advanced filtering and search',
-      'Analytics and insights',
-      'Direct messaging system'
-    ],
-    candidate: [
-      'Discover exciting AI opportunities',
-      'Showcase your skills',
-      'Participate in challenges',
-      'Build your professional network',
-      'Track your applications'
-    ]
+  const validateForm = () => {
+    const newErrors: Record<string, string> = {}
+
+    if (!formData.name.trim()) {
+      newErrors.name = 'Name is required'
+    }
+
+    if (!formData.email.trim()) {
+      newErrors.email = 'Email is required'
+    } else if (!/\S+@\S+\.\S+/.test(formData.email)) {
+      newErrors.email = 'Email is invalid'
+    }
+
+    if (!formData.password) {
+      newErrors.password = 'Password is required'
+    } else if (formData.password.length < 6) {
+      newErrors.password = 'Password must be at least 6 characters'
+    }
+
+    if (formData.password !== formData.confirmPassword) {
+      newErrors.confirmPassword = 'Passwords do not match'
+    }
+
+    setErrors(newErrors)
+    return Object.keys(newErrors).length === 0
+  }
+
+  const handleSubmit = async (e: React.FormEvent) => {
+    e.preventDefault()
+    
+    if (!validateForm()) {
+      return
+    }
+
+    setIsLoading(true)
+
+    try {
+      // Here you would make an API call to register the user
+      const response = await fetch('/api/auth/register', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({
+          name: formData.name,
+          email: formData.email,
+          password: formData.password,
+          role: formData.role
+        }),
+      })
+
+      if (response.ok) {
+        // Redirect based on role
+        if (formData.role === 'recruiter') {
+          router.push('/recruiter-dashboard')
+        } else {
+          router.push('/candidate-dashboard')
+        }
+      } else {
+        const errorData = await response.json()
+        setErrors({ submit: errorData.message || 'Registration failed' })
+      }
+    } catch (error) {
+      setErrors({ submit: 'Network error. Please try again.' })
+    } finally {
+      setIsLoading(false)
+    }
   }
 
   return (
-    <div className="min-h-screen bg-gray-50">
-      <Header />
-      
-      {/* Hero Section */}
-      <section className="pt-32 pb-16 bg-gradient-to-br from-primary-500 to-secondary-600">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
-          <h1 className="text-4xl md:text-6xl font-bold text-white mb-6">
+    <div className="min-h-screen bg-gradient-to-br from-slate-50 via-blue-50 to-indigo-50 flex items-center justify-center py-12 px-4 sm:px-6 lg:px-8">
+      <div className="max-w-md w-full space-y-8">
+        {/* Header */}
+        <div className="text-center">
+          <Link href="/" className="flex items-center justify-center space-x-2 mb-6">
+            <div className="relative">
+              <div className="w-12 h-12 bg-gradient-to-br from-primary-500 to-secondary-600 rounded-xl flex items-center justify-center">
+                <Sparkles className="w-7 h-7 text-white" />
+              </div>
+              <div className="absolute inset-0 bg-gradient-to-br from-primary-500 to-secondary-600 rounded-xl blur-lg opacity-50"></div>
+            </div>
+            <span className="text-3xl font-bold bg-gradient-to-r from-primary-600 to-secondary-600 bg-clip-text text-transparent">
+              TalentAI
+            </span>
+          </Link>
+          
+          <h2 className="text-4xl font-black text-gray-900 mb-2">
             Join TalentAI
-          </h1>
-          <p className="text-xl text-white/90 mb-8 max-w-3xl mx-auto">
-            Choose your path and start your journey with the most intelligent AI talent platform
+          </h2>
+          <p className="text-gray-600 font-medium">
+            Create your account and start your journey
           </p>
         </div>
-      </section>
 
-      {/* Registration Content */}
-      <section className="py-20">
-        <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8">
-          {step === 1 && (
-            <div className="text-center">
-              <h2 className="text-3xl font-bold text-gray-900 mb-8">
-                How will you use TalentAI?
-              </h2>
-              
-              <div className="grid grid-cols-1 md:grid-cols-2 gap-8 mb-12">
-                {/* Recruiter Option */}
-                <div 
-                  onClick={() => handleUserTypeSelect('recruiter')}
-                  className="group cursor-pointer bg-white rounded-2xl p-8 shadow-sm border-2 border-transparent hover:border-primary-300 hover:shadow-lg transition-all duration-300"
-                >
-                  <div className="w-20 h-20 bg-gradient-to-br from-primary-500 to-primary-600 rounded-2xl flex items-center justify-center mx-auto mb-6 group-hover:scale-110 transition-transform duration-300">
-                    <Building className="w-10 h-10 text-white" />
-                  </div>
-                  <h3 className="text-2xl font-bold text-gray-900 mb-4">
-                    I'm a Recruiter
-                  </h3>
-                  <p className="text-gray-600 mb-6">
-                    Looking for top AI talent to join your team? Find the perfect candidates with our intelligent matching system.
-                  </p>
-                  <div className="flex items-center justify-center text-primary-600 font-medium group-hover:text-primary-700 transition-colors">
-                    <span>Get Started</span>
-                    <ArrowRight className="w-4 h-4 ml-2 group-hover:translate-x-1 transition-transform" />
-                  </div>
-                </div>
-
-                {/* Candidate Option */}
-                <div 
-                  onClick={() => handleUserTypeSelect('candidate')}
-                  className="group cursor-pointer bg-white rounded-2xl p-8 shadow-sm border-2 border-transparent hover:border-secondary-300 hover:shadow-lg transition-all duration-300"
-                >
-                  <div className="w-20 h-20 bg-gradient-to-br from-secondary-500 to-secondary-600 rounded-2xl flex items-center mx-auto mb-6 group-hover:scale-110 transition-transform duration-300">
-                    <UserCheck className="w-10 h-10 text-white" />
-                  </div>
-                  <h3 className="text-2xl font-bold text-gray-900 mb-4">
-                    I'm a Candidate
-                  </h3>
-                  <p className="text-gray-600 mb-6">
-                    Ready to showcase your AI skills? Connect with top companies and opportunities that match your expertise.
-                  </p>
-                  <div className="flex items-center justify-center text-secondary-600 font-medium group-hover:text-secondary-700 transition-colors">
-                    <span>Get Started</span>
-                    <ArrowRight className="w-4 h-4 ml-2 group-hover:translate-x-1 transition-transform" />
-                  </div>
-                </div>
+        {/* Registration Form */}
+        <div className="bg-white/80 backdrop-blur-sm rounded-3xl shadow-xl border border-white/20 p-8">
+          <form onSubmit={handleSubmit} className="space-y-6">
+            {/* Name Field */}
+            <div>
+              <label htmlFor="name" className="block text-sm font-bold text-gray-700 mb-2">
+                Full Name
+              </label>
+              <div className="relative">
+                <User className="absolute left-3 top-1/2 transform -translate-y-1/2 w-5 h-5 text-gray-400" />
+                <input
+                  id="name"
+                  name="name"
+                  type="text"
+                  required
+                  value={formData.name}
+                  onChange={handleInputChange}
+                  className={`w-full pl-10 pr-4 py-3 border rounded-xl focus:ring-2 focus:ring-primary-500 focus:border-transparent transition-all duration-200 ${
+                    errors.name ? 'border-red-300' : 'border-gray-300'
+                  }`}
+                  placeholder="Enter your full name"
+                />
               </div>
-
-              <div className="text-center">
-                <p className="text-gray-600 mb-4">Already have an account?</p>
-                <button 
-                  onClick={() => router.push('/')}
-                  className="text-primary-600 hover:text-primary-700 font-medium transition-colors"
-                >
-                  Sign in instead
-                </button>
-              </div>
+              {errors.name && (
+                <p className="mt-1 text-sm text-red-600">{errors.name}</p>
+              )}
             </div>
-          )}
 
-          {step === 2 && userType && (
-            <div className="bg-white rounded-2xl shadow-sm border border-gray-100 p-8">
-              <div className="text-center mb-8">
-                <div className="w-16 h-16 bg-gradient-to-br from-primary-500 to-secondary-600 rounded-2xl flex items-center justify-center mx-auto mb-4">
-                  {userType === 'recruiter' ? (
-                    <Building className="w-8 h-8 text-white" />
-                  ) : (
-                    <UserCheck className="w-8 h-8 text-white" />
-                  )}
-                </div>
-                <h2 className="text-3xl font-bold text-gray-900 mb-2">
-                  Welcome, {userType === 'recruiter' ? 'Recruiter' : 'Candidate'}!
-                </h2>
-                <p className="text-gray-600">
-                  You're just one step away from accessing {userType === 'recruiter' ? 'top AI talent' : 'exciting opportunities'}
-                </p>
+            {/* Email Field */}
+            <div>
+              <label htmlFor="email" className="block text-sm font-bold text-gray-700 mb-2">
+                Email Address
+              </label>
+              <div className="relative">
+                <Mail className="absolute left-3 top-1/2 transform -translate-y-1/2 w-5 h-5 text-gray-400" />
+                <input
+                  id="email"
+                  name="email"
+                  type="email"
+                  required
+                  value={formData.email}
+                  onChange={handleInputChange}
+                  className={`w-full pl-10 pr-4 py-3 border rounded-xl focus:ring-2 focus:ring-primary-500 focus:border-transparent transition-all duration-200 ${
+                    errors.email ? 'border-red-300' : 'border-gray-300'
+                  }`}
+                  placeholder="Enter your email"
+                />
               </div>
+              {errors.email && (
+                <p className="mt-1 text-sm text-red-600">{errors.email}</p>
+              )}
+            </div>
 
-              {/* Benefits */}
-              <div className="mb-8">
-                <h3 className="text-xl font-semibold text-gray-900 mb-4 text-center">
-                  What you'll get:
-                </h3>
-                <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                  {benefits[userType].map((benefit, index) => (
-                    <div key={index} className="flex items-center gap-3 p-3 bg-gray-50 rounded-lg">
-                      <CheckCircle className="w-5 h-5 text-green-500 flex-shrink-0" />
-                      <span className="text-gray-700">{benefit}</span>
-                    </div>
-                  ))}
-                </div>
-              </div>
-
-              {/* Quick Start */}
-              <div className="text-center">
+            {/* Role Selection */}
+            <div>
+              <label htmlFor="role" className="block text-sm font-bold text-gray-700 mb-2">
+                I am a
+              </label>
+              <div className="grid grid-cols-2 gap-3">
                 <button
-                  onClick={handleContinue}
-                  className="bg-gradient-to-r from-primary-600 to-secondary-600 text-white px-8 py-4 rounded-xl hover:from-primary-700 hover:to-secondary-700 transition-all duration-300 font-medium text-lg flex items-center mx-auto"
+                  type="button"
+                  onClick={() => setFormData(prev => ({ ...prev, role: 'candidate' }))}
+                  className={`p-4 rounded-xl border-2 transition-all duration-200 flex items-center justify-center gap-3 ${
+                    formData.role === 'candidate'
+                      ? 'border-primary-500 bg-primary-50 text-primary-700'
+                      : 'border-gray-300 hover:border-gray-400'
+                  }`}
                 >
-                  <Sparkles className="w-5 h-5 mr-2" />
-                  Start Exploring Now
+                  <UserCheck className="w-5 h-5" />
+                  <span className="font-medium">Candidate</span>
                 </button>
-                <p className="text-sm text-gray-500 mt-3">
-                  No account creation required - start using the platform immediately
-                </p>
-              </div>
-
-              <div className="text-center mt-6">
-                <button 
-                  onClick={() => setStep(1)}
-                  className="text-gray-500 hover:text-gray-700 font-medium transition-colors"
+                <button
+                  type="button"
+                  onClick={() => setFormData(prev => ({ ...prev, role: 'recruiter' }))}
+                  className={`p-4 rounded-xl border-2 transition-all duration-200 flex items-center justify-center gap-3 ${
+                    formData.role === 'recruiter'
+                      ? 'border-primary-500 bg-primary-50 text-primary-700'
+                      : 'border-gray-300 hover:border-gray-400'
+                  }`}
                 >
-                  ← Back to selection
+                  <Building className="w-5 h-5" />
+                  <span className="font-medium">Recruiter</span>
                 </button>
               </div>
             </div>
-          )}
-        </div>
-      </section>
 
-      <Footer />
+            {/* Password Field */}
+            <div>
+              <label htmlFor="password" className="block text-sm font-bold text-gray-700 mb-2">
+                Password
+              </label>
+              <div className="relative">
+                <Lock className="absolute left-3 top-1/2 transform -translate-y-1/2 w-5 h-5 text-gray-400" />
+                <input
+                  id="password"
+                  name="password"
+                  type={showPassword ? 'text' : 'password'}
+                  required
+                  value={formData.password}
+                  onChange={handleInputChange}
+                  className={`w-full pl-10 pr-12 py-3 border rounded-xl focus:ring-2 focus:ring-primary-500 focus:border-transparent transition-all duration-200 ${
+                    errors.password ? 'border-red-300' : 'border-gray-300'
+                  }`}
+                  placeholder="Create a password"
+                />
+                <button
+                  type="button"
+                  onClick={() => setShowPassword(!showPassword)}
+                  className="absolute right-3 top-1/2 transform -translate-y-1/2 text-gray-400 hover:text-gray-600"
+                >
+                  {showPassword ? <EyeOff className="w-5 h-5" /> : <Eye className="w-5 h-5" />}
+                </button>
+              </div>
+              {errors.password && (
+                <p className="mt-1 text-sm text-red-600">{errors.password}</p>
+              )}
+            </div>
+
+            {/* Confirm Password Field */}
+            <div>
+              <label htmlFor="confirmPassword" className="block text-sm font-bold text-gray-700 mb-2">
+                Confirm Password
+              </label>
+              <div className="relative">
+                <Lock className="absolute left-3 top-1/2 transform -translate-y-1/2 w-5 h-5 text-gray-400" />
+                <input
+                  id="confirmPassword"
+                  name="confirmPassword"
+                  type={showConfirmPassword ? 'text' : 'password'}
+                  required
+                  value={formData.confirmPassword}
+                  onChange={handleInputChange}
+                  className={`w-full pl-10 pr-12 py-3 border rounded-xl focus:ring-2 focus:ring-primary-500 focus:border-transparent transition-all duration-200 ${
+                    errors.confirmPassword ? 'border-red-300' : 'border-gray-300'
+                  }`}
+                  placeholder="Confirm your password"
+                />
+                <button
+                  type="button"
+                  onClick={() => setShowConfirmPassword(!showConfirmPassword)}
+                  className="absolute right-3 top-1/2 transform -translate-y-1/2 text-gray-400 hover:text-gray-600"
+                >
+                  {showConfirmPassword ? <EyeOff className="w-5 h-5" /> : <Eye className="w-5 h-5" />}
+                </button>
+              </div>
+              {errors.confirmPassword && (
+                <p className="mt-1 text-sm text-red-600">{errors.confirmPassword}</p>
+              )}
+            </div>
+
+            {/* Submit Error */}
+            {errors.submit && (
+              <div className="bg-red-50 border border-red-200 rounded-xl p-4">
+                <p className="text-sm text-red-600">{errors.submit}</p>
+              </div>
+            )}
+
+            {/* Submit Button */}
+            <button
+              type="submit"
+              disabled={isLoading}
+              className="w-full bg-gradient-to-r from-primary-600 to-secondary-600 text-white py-4 px-6 rounded-xl font-bold hover:from-primary-700 hover:to-secondary-700 disabled:opacity-50 disabled:cursor-not-allowed transition-all duration-300 flex items-center justify-center gap-3 transform hover:scale-105"
+            >
+              {isLoading ? (
+                <>
+                  <div className="w-5 h-5 border-2 border-white border-t-transparent rounded-full animate-spin"></div>
+                  Creating Account...
+                </>
+              ) : (
+                <>
+                  <UserPlus className="w-5 h-5" />
+                  Create Account
+                  <ArrowRight className="w-5 h-5" />
+                </>
+              )}
+            </button>
+          </form>
+
+          {/* Login Link */}
+          <div className="mt-6 text-center">
+            <p className="text-gray-600">
+              Already have an account?{' '}
+              <Link href="/" className="text-primary-600 hover:text-primary-700 font-bold">
+                Sign in here
+              </Link>
+            </p>
+          </div>
+        </div>
+
+        {/* Features */}
+        <div className="text-center">
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-4 text-sm text-gray-600">
+            <div className="flex items-center justify-center gap-2">
+              <div className="w-2 h-2 bg-green-500 rounded-full"></div>
+              <span>AI-Powered Matching</span>
+            </div>
+            <div className="flex items-center justify-center gap-2">
+              <div className="w-2 h-2 bg-blue-500 rounded-full"></div>
+              <span>Secure & Private</span>
+            </div>
+            <div className="flex items-center justify-center gap-2">
+              <div className="w-2 h-2 bg-purple-500 rounded-full"></div>
+              <span>Free Forever</span>
+            </div>
+          </div>
+        </div>
+      </div>
     </div>
   )
 }
+
+
+

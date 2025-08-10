@@ -2,470 +2,533 @@
 
 import { useState } from 'react'
 import { 
-  Puzzle, 
+  Gamepad2, 
   Brain, 
-  Clock, 
+  Target, 
   Trophy, 
+  Star, 
+  Clock, 
   Users, 
-  Star,
-  Play,
-  Target,
   Zap,
-  TrendingUp,
-  Gamepad2,
-  Lightbulb
+  Play,
+  BarChart3,
+  Award,
+  CheckCircle,
+  ArrowRight,
+  Lock,
+  Unlock,
+  Code
 } from 'lucide-react'
 import Header from '@/components/Header'
 import Footer from '@/components/Footer'
+import CodeChallengeGame from '@/components/CodeChallengeGame'
+import PersonalityGame from '@/components/PersonalityGame'
+import CodeBattleGame from '@/components/CodeBattleGame'
 
-const mockGames = [
+const games = [
   {
     id: 1,
-    title: 'Neural Network Puzzle',
-    category: 'Logic & Pattern',
+    title: 'Code Challenge',
+    description: 'Solve coding problems and improve your technical skills',
+    category: 'Technical',
     difficulty: 'Medium',
-    timeLimit: '15 min',
-    participants: 234,
-    highScore: 950,
-    description: 'Connect neurons in the correct pattern to complete the neural network. Test your understanding of AI architecture.',
-    skills: ['Pattern Recognition', 'Logic', 'AI Concepts', 'Problem Solving'],
-    tags: ['AI', 'Neural Networks', 'Logic']
+    duration: '30 min',
+    players: 1250,
+    rating: 4.8,
+    icon: Gamepad2,
+    color: 'from-purple-500 to-pink-500',
+    bgColor: 'from-purple-50 to-pink-50',
+    borderColor: 'border-purple-200',
+    unlocked: true,
+    completed: false,
+    score: null
   },
   {
     id: 2,
-    title: 'Data Flow Maze',
-    category: 'Strategy',
-    difficulty: 'Hard',
-    timeLimit: '20 min',
-    participants: 156,
-    highScore: 1200,
-    description: 'Navigate through a complex data pipeline maze. Optimize data flow and avoid bottlenecks.',
-    skills: ['Data Engineering', 'Optimization', 'Strategic Thinking', 'Flow Analysis'],
-    tags: ['Data', 'Strategy', 'Optimization']
+    title: 'Personality Test',
+    description: 'Discover your work style and team compatibility',
+    category: 'Assessment',
+    difficulty: 'Easy',
+    duration: '15 min',
+    players: 890,
+    rating: 4.6,
+    icon: Brain,
+    color: 'from-blue-500 to-indigo-500',
+    bgColor: 'from-blue-50 to-indigo-50',
+    borderColor: 'border-blue-200',
+    unlocked: true,
+    completed: true,
+    score: 85
   },
   {
     id: 3,
-    title: 'Algorithm Race',
-    category: 'Speed & Accuracy',
-    difficulty: 'Easy',
-    timeLimit: '10 min',
-    participants: 445,
-    highScore: 800,
-    description: 'Race against time to implement algorithms correctly. Balance speed with accuracy.',
-    skills: ['Algorithm Design', 'Speed', 'Accuracy', 'Code Quality'],
-    tags: ['Algorithms', 'Speed', 'Coding']
+    title: 'Problem Solving',
+    description: 'Test your analytical and problem-solving abilities',
+    category: 'Cognitive',
+    difficulty: 'Hard',
+    duration: '45 min',
+    players: 650,
+    rating: 4.9,
+    icon: Target,
+    color: 'from-green-500 to-emerald-500',
+    bgColor: 'from-green-50 to-emerald-50',
+    borderColor: 'border-green-200',
+    unlocked: false,
+    completed: false,
+    score: null
   },
   {
     id: 4,
-    title: 'Model Optimization Challenge',
-    category: 'Problem Solving',
-    difficulty: 'Hard',
-    timeLimit: '25 min',
-    participants: 89,
-    highScore: 1500,
-    description: 'Optimize machine learning models for better performance. Find the best hyperparameters.',
-    skills: ['ML Optimization', 'Hyperparameter Tuning', 'Performance Analysis', 'Critical Thinking'],
-    tags: ['ML', 'Optimization', 'Problem Solving']
+    title: 'AI Logic Puzzle',
+    description: 'Solve AI-related logic puzzles and brain teasers',
+    category: 'Technical',
+    difficulty: 'Medium',
+    duration: '25 min',
+    players: 420,
+    rating: 4.7,
+    icon: Brain,
+    color: 'from-orange-500 to-red-500',
+    bgColor: 'from-orange-50 to-red-50',
+    borderColor: 'border-orange-200',
+    unlocked: true,
+    completed: false,
+    score: null
   },
   {
     id: 5,
-    title: 'Code Debugging',
-    category: 'Debugging',
-    difficulty: 'Medium',
-    timeLimit: '12 min',
-    participants: 178,
-    highScore: 1100,
-    description: 'Find and fix bugs in AI code snippets. Test your debugging skills and attention to detail.',
-    skills: ['Debugging', 'Code Review', 'Attention to Detail', 'Problem Solving'],
-    tags: ['Debugging', 'Code', 'AI']
+    title: 'Team Collaboration',
+    description: 'Test your teamwork and communication skills',
+    category: 'Soft Skills',
+    difficulty: 'Easy',
+    duration: '20 min',
+    players: 780,
+    rating: 4.5,
+    icon: Users,
+    color: 'from-teal-500 to-cyan-500',
+    bgColor: 'from-teal-50 to-cyan-50',
+    borderColor: 'border-teal-200',
+    unlocked: false,
+    completed: false,
+    score: null
   },
   {
     id: 6,
-    title: 'Data Visualization Puzzle',
-    category: 'Creative',
-    difficulty: 'Medium',
-    timeLimit: '18 min',
-    participants: 134,
-    highScore: 1050,
-    description: 'Create meaningful visualizations from complex datasets. Express data insights creatively.',
-    skills: ['Data Visualization', 'Creativity', 'Data Analysis', 'Visual Design'],
-    tags: ['Visualization', 'Data', 'Creative']
+    title: 'Speed Coding',
+    description: 'Race against time to solve coding challenges',
+    category: 'Technical',
+    difficulty: 'Hard',
+    duration: '15 min',
+    players: 320,
+    rating: 4.8,
+    icon: Zap,
+    color: 'from-yellow-500 to-orange-500',
+    bgColor: 'from-yellow-50 to-orange-50',
+    borderColor: 'border-yellow-200',
+    unlocked: false,
+    completed: false,
+    score: null
   }
 ]
 
-const categories = [
-  'All',
-  'Logic & Pattern',
-  'Strategy',
-  'Speed & Accuracy',
-  'Problem Solving',
-  'Debugging',
-  'Creative'
+const achievements = [
+  {
+    id: 1,
+    title: 'First Steps',
+    description: 'Complete your first game',
+    icon: Trophy,
+    unlocked: true,
+    progress: 100
+  },
+  {
+    id: 2,
+    title: 'Speed Demon',
+    description: 'Complete 3 games under time pressure',
+    icon: Clock,
+    unlocked: false,
+    progress: 33
+  },
+  {
+    id: 3,
+    title: 'Problem Solver',
+    description: 'Solve 10 difficult problems',
+    icon: Target,
+    unlocked: false,
+    progress: 60
+  },
+  {
+    id: 4,
+    title: 'Perfect Score',
+    description: 'Get 100% on any game',
+    icon: Star,
+    unlocked: false,
+    progress: 0
+  }
 ]
-
-const difficulties = ['All', 'Easy', 'Medium', 'Hard']
 
 export default function GamesPage() {
-  const [selectedCategory, setSelectedCategory] = useState('All')
-  const [selectedDifficulty, setSelectedDifficulty] = useState('All')
-  const [searchTerm, setSearchTerm] = useState('')
+  const [selectedGame, setSelectedGame] = useState<typeof games[0] | null>(null)
+  const [activeTab, setActiveTab] = useState('games')
+  const [showCodeGame, setShowCodeGame] = useState(false)
+  const [showPersonalityGame, setShowPersonalityGame] = useState(false)
+  const [showCodeBattleGame, setShowCodeBattleGame] = useState(false)
 
-  const filteredGames = mockGames.filter(game => {
-    const matchesCategory = selectedCategory === 'All' || game.category === selectedCategory
-    const matchesDifficulty = selectedDifficulty === 'All' || game.difficulty === selectedDifficulty
-    const matchesSearch = game.title.toLowerCase().includes(searchTerm.toLowerCase()) ||
-                         game.description.toLowerCase().includes(searchTerm.toLowerCase()) ||
-                         game.skills.some(skill => skill.toLowerCase().includes(searchTerm.toLowerCase()))
+  const completedGames = games.filter(game => game.completed).length
+  const totalScore = games.reduce((sum, game) => sum + (game.score || 0), 0)
+  const averageScore = completedGames > 0 ? Math.round(totalScore / completedGames) : 0
 
-    return matchesCategory && matchesDifficulty && matchesSearch
-  })
-
-  const getDifficultyColor = (difficulty: string) => {
-    switch (difficulty) {
-      case 'Easy': return 'bg-green-100 text-green-800'
-      case 'Medium': return 'bg-yellow-100 text-yellow-800'
-      case 'Hard': return 'bg-orange-100 text-orange-800'
-      default: return 'bg-gray-100 text-gray-800'
+  const handlePlayGame = (game: typeof games[0]) => {
+    if (game.unlocked) {
+      if (game.title === 'Code Challenge') {
+        setShowCodeGame(true)
+      } else if (game.title === 'Personality Assessment') {
+        setShowPersonalityGame(true)
+      } else if (game.title === 'Code Battle') {
+        setShowCodeBattleGame(true)
+      } else {
+        setSelectedGame(game)
+        // Here you would typically navigate to the actual game
+        console.log(`Starting game: ${game.title}`)
+      }
     }
   }
 
-  const getCategoryIcon = (category: string) => {
-    switch (category) {
-      case 'Logic & Pattern': return Brain
-      case 'Strategy': return Target
-      case 'Speed & Accuracy': return Zap
-      case 'Problem Solving': return Lightbulb
-      case 'Debugging': return Puzzle
-      case 'Creative': return Star
-      default: return Gamepad2
-    }
+  const handleGameComplete = (score: number, time: number, gameType?: string) => {
+    // Update the game score in the games array
+    const updatedGames = games.map(game => {
+      if (gameType === 'Code Challenge' && game.title === 'Code Challenge') {
+        return { ...game, completed: true, score: score }
+      } else if (gameType === 'Personality Assessment' && game.title === 'Personality Assessment') {
+        return { ...game, completed: true, score: score }
+      } else if (gameType === 'Code Battle' && game.title === 'Code Battle') {
+        return { ...game, completed: true, score: score }
+      }
+      return game
+    })
+    // In a real app, you'd save this to the backend
+    console.log(`Game completed with score: ${score}% in ${time} seconds`)
+  }
+
+  const handlePersonalityComplete = (score: number, personality: string) => {
+    handleGameComplete(score, 0, 'Personality Assessment')
+    console.log(`Personality assessment completed: ${personality} personality`)
   }
 
   return (
-    <div className="min-h-screen bg-gray-50">
+    <div className="min-h-screen bg-gradient-to-br from-slate-50 via-blue-50 to-indigo-50">
       <Header />
-
+      
       {/* Hero Section */}
-      <section className="pt-32 pb-16 bg-gradient-to-br from-accent-500 to-primary-600">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
-          <h1 className="text-4xl md:text-6xl font-bold text-white mb-6">
-            AI Brain Games
-          </h1>
-          <p className="text-xl text-white/90 mb-8 max-w-3xl mx-auto">
-            Challenge your mind with interactive puzzles, brain teasers, and AI-focused games. 
-            Have fun while sharpening your skills and competing with others.
-          </p>
-
-          {/* Search Bar */}
-          <div className="max-w-2xl mx-auto">
-            <div className="relative">
-              <Puzzle className="absolute left-4 top-1/2 transform -translate-y-1/2 w-6 h-6 text-gray-400" />
-              <input
-                type="text"
-                placeholder="Search games, skills, or categories..."
-                value={searchTerm}
-                onChange={(e) => setSearchTerm(e.target.value)}
-                className="w-full pl-12 pr-4 py-4 text-lg bg-white rounded-2xl shadow-lg focus:ring-4 focus:ring-white/20 focus:outline-none"
-              />
+      <section className="pt-32 pb-16 bg-gradient-to-br from-purple-600 via-pink-600 to-indigo-600 relative overflow-hidden">
+        <div className="absolute inset-0 bg-white/10"></div>
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 relative z-10">
+          <div className="text-center">
+            <div className="flex items-center justify-center mb-4">
+              <Gamepad2 className="w-8 h-8 text-yellow-400 mr-3 animate-pulse" />
+              <h1 className="text-4xl md:text-6xl font-black text-white mb-6 bg-gradient-to-r from-yellow-400 to-orange-400 bg-clip-text text-transparent">
+                AI Assessment Games
+              </h1>
+            </div>
+            <p className="text-xl text-white/90 mb-8 max-w-3xl mx-auto font-medium">
+              Test your skills through interactive games and challenges. Improve your profile and discover your strengths.
+            </p>
+            
+            <div className="flex justify-center gap-4">
+              <button className="bg-gradient-to-r from-yellow-400 to-orange-500 text-black px-8 py-4 rounded-2xl hover:from-yellow-500 hover:to-orange-600 transition-all duration-300 font-bold text-lg shadow-2xl hover:shadow-yellow-500/25 flex items-center transform hover:scale-105">
+                <Play className="w-6 h-6 mr-3" />
+                Start Playing
+              </button>
+              <button className="border-2 border-white text-white px-8 py-4 rounded-2xl hover:bg-white hover:text-purple-600 transition-all duration-300 font-bold text-lg backdrop-blur-sm">
+                View Leaderboard
+              </button>
             </div>
           </div>
         </div>
       </section>
 
-      {/* Filters and Results */}
+      {/* Dashboard Content */}
       <section className="py-12">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          {/* Filters */}
-          <div className="mb-8">
-            <div className="flex flex-wrap gap-4">
-              {/* Category Filter */}
-              <div>
-                <label className="block text-sm font-medium text-gray-700 mb-2">Category</label>
-                <select
-                  value={selectedCategory}
-                  onChange={(e) => setSelectedCategory(e.target.value)}
-                  className="px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary-500 focus:border-transparent"
-                >
-                  {categories.map((category) => (
-                    <option key={category} value={category}>{category}</option>
-                  ))}
-                </select>
-              </div>
+          {/* Navigation Tabs */}
+          <div className="flex space-x-1 bg-white/80 backdrop-blur-sm p-2 rounded-2xl shadow-lg mb-8 border border-white/20">
+            {[
+              { id: 'games', label: 'Games', icon: Gamepad2 },
+              { id: 'achievements', label: 'Achievements', icon: Trophy },
+              { id: 'stats', label: 'Statistics', icon: BarChart3 }
+            ].map((tab) => (
+              <button
+                key={tab.id}
+                onClick={() => setActiveTab(tab.id)}
+                className={`flex-1 flex items-center justify-center gap-3 px-6 py-4 rounded-xl font-bold transition-all duration-300 ${
+                  activeTab === tab.id
+                    ? 'bg-gradient-to-r from-purple-600 to-pink-600 text-white shadow-lg transform scale-105'
+                    : 'text-gray-600 hover:text-gray-900 hover:bg-white/60'
+                }`}
+              >
+                <tab.icon className="w-5 h-5" />
+                {tab.label}
+              </button>
+            ))}
+          </div>
 
-              {/* Difficulty Filter */}
-              <div>
-                <label className="block text-sm font-medium text-gray-700 mb-2">Difficulty</label>
-                <select
-                  value={selectedDifficulty}
-                  onChange={(e) => setSelectedDifficulty(e.target.value)}
-                  className="px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary-500 focus:border-transparent"
+          {/* Tab Content */}
+          {activeTab === 'games' && (
+            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+              {games.map((game) => (
+                <div
+                  key={game.id}
+                  className={`bg-white/80 backdrop-blur-sm rounded-3xl shadow-xl border ${game.borderColor} hover:shadow-2xl transition-all duration-300 transform hover:scale-105 ${
+                    !game.unlocked ? 'opacity-60' : ''
+                  }`}
                 >
-                  {difficulties.map((difficulty) => (
-                    <option key={difficulty} value={difficulty}>{difficulty}</option>
-                  ))}
-                </select>
-              </div>
+                  <div className={`h-32 bg-gradient-to-br ${game.bgColor} rounded-t-3xl flex items-center justify-center relative overflow-hidden`}>
+                    <div className={`absolute inset-0 bg-gradient-to-br ${game.color} opacity-20`}></div>
+                    <div className={`w-16 h-16 bg-gradient-to-br ${game.color} rounded-full flex items-center justify-center text-white relative z-10 shadow-2xl`}>
+                      <game.icon className="w-8 h-8" />
+                    </div>
+                    {!game.unlocked && (
+                      <div className="absolute top-4 right-4">
+                        <Lock className="w-6 h-6 text-gray-400" />
+                      </div>
+                    )}
+                    {game.completed && (
+                      <div className="absolute top-4 left-4">
+                        <CheckCircle className="w-6 h-6 text-green-500" />
+                      </div>
+                    )}
+                  </div>
 
-              {/* Clear Filters */}
-              <div className="flex items-end">
-                <button
-                  onClick={() => {
-                    setSelectedCategory('All')
-                    setSelectedDifficulty('All')
-                    setSearchTerm('')
-                  }}
-                  className="px-4 py-2 bg-gray-200 text-gray-700 rounded-lg hover:bg-gray-300 transition-colors"
-                >
-                  Clear Filters
-                </button>
+                  <div className="p-6">
+                    <div className="flex items-center justify-between mb-2">
+                      <h3 className="text-xl font-bold text-gray-900">{game.title}</h3>
+                      <div className="flex items-center gap-1">
+                        <Star className="w-4 h-4 text-yellow-400 fill-current" />
+                        <span className="text-sm font-medium text-gray-600">{game.rating}</span>
+                      </div>
+                    </div>
+
+                    <p className="text-gray-600 mb-4 text-sm">{game.description}</p>
+
+                    <div className="flex items-center gap-4 text-sm text-gray-500 mb-4">
+                      <span className="flex items-center">
+                        <Clock className="w-4 h-4 mr-1" />
+                        {game.duration}
+                      </span>
+                      <span className="flex items-center">
+                        <Users className="w-4 h-4 mr-1" />
+                        {game.players}
+                      </span>
+                    </div>
+
+                    <div className="flex items-center justify-between mb-4">
+                      <span className={`px-3 py-1 rounded-full text-xs font-bold ${
+                        game.difficulty === 'Easy' ? 'bg-green-100 text-green-800' :
+                        game.difficulty === 'Medium' ? 'bg-yellow-100 text-yellow-800' :
+                        'bg-red-100 text-red-800'
+                      }`}>
+                        {game.difficulty}
+                      </span>
+                      <span className="text-sm text-gray-500">{game.category}</span>
+                    </div>
+
+                    {game.completed && game.score && (
+                      <div className="mb-4">
+                        <div className="flex items-center justify-between mb-1">
+                          <span className="text-sm text-gray-600">Score</span>
+                          <span className="font-bold text-green-600">{game.score}%</span>
+                        </div>
+                        <div className="w-full bg-gray-200 rounded-full h-2">
+                          <div 
+                            className="bg-gradient-to-r from-green-500 to-emerald-500 h-2 rounded-full"
+                            style={{ width: `${game.score}%` }}
+                          ></div>
+                        </div>
+                      </div>
+                    )}
+
+                    <button
+                      onClick={() => handlePlayGame(game)}
+                      disabled={!game.unlocked}
+                      className={`w-full py-3 px-4 rounded-xl font-bold transition-all duration-300 flex items-center justify-center gap-2 ${
+                        game.unlocked
+                          ? `bg-gradient-to-r ${game.color} text-white hover:shadow-lg transform hover:scale-105`
+                          : 'bg-gray-300 text-gray-500 cursor-not-allowed'
+                      }`}
+                    >
+                      {game.unlocked ? (
+                        <>
+                          <Play className="w-4 h-4" />
+                          {game.completed ? 'Play Again' : 'Start Game'}
+                        </>
+                      ) : (
+                        <>
+                          <Lock className="w-4 h-4" />
+                          Locked
+                        </>
+                      )}
+                    </button>
+                  </div>
+                </div>
+              ))}
+            </div>
+          )}
+
+          {activeTab === 'achievements' && (
+            <div className="bg-white/80 backdrop-blur-sm rounded-3xl shadow-xl border border-white/20">
+              <div className="p-8 border-b border-gray-100">
+                <h2 className="text-3xl font-black text-gray-900">Achievements</h2>
+                <p className="text-gray-600 font-medium">Unlock badges and track your progress</p>
+              </div>
+              
+              <div className="p-8">
+                <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
+                  {achievements.map((achievement) => (
+                    <div
+                      key={achievement.id}
+                      className={`p-6 rounded-2xl border-2 transition-all duration-300 ${
+                        achievement.unlocked
+                          ? 'bg-gradient-to-br from-yellow-50 to-orange-50 border-yellow-200 shadow-lg'
+                          : 'bg-gray-50 border-gray-200'
+                      }`}
+                    >
+                      <div className={`w-16 h-16 rounded-full flex items-center justify-center mb-4 mx-auto ${
+                        achievement.unlocked
+                          ? 'bg-gradient-to-br from-yellow-500 to-orange-500 text-white'
+                          : 'bg-gray-300 text-gray-500'
+                      }`}>
+                        <achievement.icon className="w-8 h-8" />
+                      </div>
+                      
+                      <h3 className={`text-lg font-bold text-center mb-2 ${
+                        achievement.unlocked ? 'text-gray-900' : 'text-gray-500'
+                      }`}>
+                        {achievement.title}
+                      </h3>
+                      
+                      <p className={`text-sm text-center mb-4 ${
+                        achievement.unlocked ? 'text-gray-600' : 'text-gray-400'
+                      }`}>
+                        {achievement.description}
+                      </p>
+
+                      <div className="w-full bg-gray-200 rounded-full h-2">
+                        <div 
+                          className={`h-2 rounded-full transition-all duration-300 ${
+                            achievement.unlocked
+                              ? 'bg-gradient-to-r from-yellow-500 to-orange-500'
+                              : 'bg-gray-300'
+                          }`}
+                          style={{ width: `${achievement.progress}%` }}
+                        ></div>
+                      </div>
+                      
+                      <div className="text-center mt-2">
+                        <span className={`text-xs font-medium ${
+                          achievement.unlocked ? 'text-green-600' : 'text-gray-500'
+                        }`}>
+                          {achievement.progress}%
+                        </span>
+                      </div>
+                    </div>
+                  ))}
+                </div>
               </div>
             </div>
-          </div>
+          )}
 
-          {/* Results Count */}
-          <div className="mb-6">
-            <h2 className="text-2xl font-bold text-gray-900">
-              {filteredGames.length} Games Available
-            </h2>
-            <p className="text-gray-600">Choose your next brain challenge</p>
-          </div>
-
-          {/* Games Grid */}
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-            {filteredGames.map((game) => {
-              const CategoryIcon = getCategoryIcon(game.category)
-              return (
-                <div key={game.id} className="bg-white rounded-2xl p-6 shadow-sm border border-gray-100 hover:shadow-md transition-shadow">
-                  {/* Header */}
-                  <div className="flex items-start justify-between mb-4">
-                    <div className="flex-1">
-                      <div className="flex items-center gap-2 mb-3">
-                        <CategoryIcon className="w-5 h-5 text-accent-600" />
-                        <span className="text-sm text-gray-500">{game.category}</span>
-                      </div>
-                      <h3 className="text-xl font-semibold text-gray-900 mb-2">
-                        {game.title}
-                      </h3>
-                      <div className="flex items-center gap-2 mb-3">
-                        <span className={`px-2 py-1 rounded-full text-xs font-medium ${getDifficultyColor(game.difficulty)}`}>
-                          {game.difficulty}
-                        </span>
-                        <span className="px-2 py-1 bg-accent-100 text-accent-800 rounded-full text-xs font-medium">
-                          {game.timeLimit}
-                        </span>
-                      </div>
+          {activeTab === 'stats' && (
+            <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
+              {/* Stats Cards */}
+              <div className="space-y-6">
+                <div className="bg-white/80 backdrop-blur-sm rounded-3xl p-6 shadow-xl border border-white/20">
+                  <h3 className="text-xl font-black text-gray-900 mb-4">Game Statistics</h3>
+                  <div className="space-y-4">
+                    <div className="flex items-center justify-between">
+                      <span className="text-gray-600 font-medium">Games Completed</span>
+                      <span className="text-3xl font-black text-purple-600">{completedGames}</span>
+                    </div>
+                    <div className="flex items-center justify-between">
+                      <span className="text-gray-600 font-medium">Average Score</span>
+                      <span className="text-3xl font-black text-green-600">{averageScore}%</span>
+                    </div>
+                    <div className="flex items-center justify-between">
+                      <span className="text-gray-600 font-medium">Total Play Time</span>
+                      <span className="text-3xl font-black text-blue-600">2.5h</span>
                     </div>
                   </div>
-
-                  {/* Description */}
-                  <p className="text-gray-600 mb-4 line-clamp-3">
-                    {game.description}
-                  </p>
-
-                  {/* Skills */}
-                  <div className="mb-4">
-                    <h4 className="text-sm font-medium text-gray-700 mb-2">Skills Tested</h4>
-                    <div className="flex flex-wrap gap-2">
-                      {game.skills.slice(0, 3).map((skill) => (
-                        <span
-                          key={skill}
-                          className="px-2 py-1 bg-gray-100 text-gray-700 rounded-full text-xs"
-                        >
-                          {skill}
-                        </span>
-                      ))}
-                      {game.skills.length > 3 && (
-                        <span className="px-2 py-1 bg-gray-100 text-gray-700 rounded-full text-xs">
-                          +{game.skills.length - 3} more
-                        </span>
-                      )}
-                    </div>
-                  </div>
-
-                  {/* Stats */}
-                  <div className="flex items-center justify-between text-sm text-gray-500 mb-4">
-                    <div className="flex items-center">
-                      <Users className="w-4 h-4 mr-1" />
-                      {game.participants} players
-                    </div>
-                    <div className="flex items-center">
-                      <Trophy className="w-4 h-4 mr-1" />
-                      High: {game.highScore}
-                    </div>
-                  </div>
-
-                  {/* Action Button */}
-                  <button className="w-full bg-accent-600 text-white py-3 px-4 rounded-xl hover:bg-accent-700 transition-colors font-medium flex items-center justify-center">
-                    <Play className="w-4 h-4 mr-2" />
-                    Play Now
-                  </button>
                 </div>
-              )
-            })}
-          </div>
 
-          {/* No Results */}
-          {filteredGames.length === 0 && (
-            <div className="text-center py-12">
-              <Puzzle className="w-16 h-16 text-gray-400 mx-auto mb-4" />
-              <h3 className="text-xl font-semibold text-gray-900 mb-2">No Games Found</h3>
-              <p className="text-gray-600">Try adjusting your filters or search terms</p>
+                <div className="bg-white/80 backdrop-blur-sm rounded-3xl p-6 shadow-xl border border-white/20">
+                  <h3 className="text-xl font-black text-gray-900 mb-4">Recent Activity</h3>
+                  <div className="space-y-3">
+                    <div className="flex items-center gap-3 text-sm">
+                      <div className="w-2 h-2 bg-green-500 rounded-full"></div>
+                      <span className="text-gray-600">Completed Personality Test</span>
+                      <span className="text-gray-400">2h ago</span>
+                    </div>
+                    <div className="flex items-center gap-3 text-sm">
+                      <div className="w-2 h-2 bg-blue-500 rounded-full"></div>
+                      <span className="text-gray-600">Started Code Challenge</span>
+                      <span className="text-gray-400">1d ago</span>
+                    </div>
+                    <div className="flex items-center gap-3 text-sm">
+                      <div className="w-2 h-2 bg-purple-500 rounded-full"></div>
+                      <span className="text-gray-600">Unlocked new achievement</span>
+                      <span className="text-gray-400">3d ago</span>
+                    </div>
+                  </div>
+                </div>
+              </div>
+
+              {/* Progress Chart */}
+              <div className="lg:col-span-2">
+                <div className="bg-white/80 backdrop-blur-sm rounded-3xl p-6 shadow-xl border border-white/20">
+                  <h3 className="text-xl font-black text-gray-900 mb-4">Skill Progress</h3>
+                  <div className="space-y-4">
+                    {[
+                      { skill: 'Problem Solving', progress: 75, color: 'from-blue-500 to-indigo-500' },
+                      { skill: 'Technical Skills', progress: 60, color: 'from-purple-500 to-pink-500' },
+                      { skill: 'Communication', progress: 85, color: 'from-green-500 to-emerald-500' },
+                      { skill: 'Teamwork', progress: 45, color: 'from-orange-500 to-red-500' }
+                    ].map((item, index) => (
+                      <div key={index}>
+                        <div className="flex items-center justify-between mb-2">
+                          <span className="text-gray-600 font-medium">{item.skill}</span>
+                          <span className="font-bold text-gray-900">{item.progress}%</span>
+                        </div>
+                        <div className="w-full bg-gray-200 rounded-full h-3">
+                          <div 
+                            className={`bg-gradient-to-r ${item.color} h-3 rounded-full transition-all duration-300`}
+                            style={{ width: `${item.progress}%` }}
+                          ></div>
+                        </div>
+                      </div>
+                    ))}
+                  </div>
+                </div>
+              </div>
             </div>
           )}
         </div>
       </section>
 
-      {/* Leaderboard Section */}
-      <section className="py-20 bg-white">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          <div className="text-center mb-16">
-            <h2 className="text-4xl font-bold text-gray-900 mb-6">
-              Top Players
-            </h2>
-            <p className="text-xl text-gray-600 max-w-3xl mx-auto">
-              See who's leading the leaderboards and competing for the top spots
-            </p>
-          </div>
-
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
-            {/* Weekly Leaderboard */}
-            <div className="bg-gradient-to-br from-primary-50 to-primary-100 rounded-2xl p-6">
-              <h3 className="text-xl font-semibold text-gray-900 mb-4 flex items-center">
-                <Trophy className="w-5 h-5 mr-2 text-primary-600" />
-                Weekly Champions
-              </h3>
-              <div className="space-y-3">
-                {[
-                  { name: 'Alex Chen', score: 2850, rank: 1 },
-                  { name: 'Sarah Kim', score: 2720, rank: 2 },
-                  { name: 'Marcus Rodriguez', score: 2680, rank: 3 }
-                ].map((player, index) => (
-                  <div key={player.rank} className="flex items-center justify-between">
-                    <div className="flex items-center">
-                      <span className={`w-6 h-6 rounded-full flex items-center justify-center text-xs font-bold mr-3 ${
-                        index === 0 ? 'bg-yellow-500 text-white' :
-                        index === 1 ? 'bg-gray-400 text-white' :
-                        'bg-orange-500 text-white'
-                      }`}>
-                        {player.rank}
-                      </span>
-                      <span className="font-medium text-gray-900">{player.name}</span>
-                    </div>
-                    <span className="font-bold text-primary-600">{player.score}</span>
-                  </div>
-                ))}
-              </div>
-            </div>
-
-            {/* Monthly Leaderboard */}
-            <div className="bg-gradient-to-br from-secondary-50 to-secondary-100 rounded-2xl p-6">
-              <h3 className="text-xl font-semibold text-gray-900 mb-4 flex items-center">
-                <TrendingUp className="w-5 h-5 mr-2 text-secondary-600" />
-                Monthly Leaders
-              </h3>
-              <div className="space-y-3">
-                {[
-                  { name: 'Priya Patel', score: 12450, rank: 1 },
-                  { name: 'David Wilson', score: 11890, rank: 2 },
-                  { name: 'Emma Thompson', score: 11560, rank: 3 }
-                ].map((player, index) => (
-                  <div key={player.rank} className="flex items-center justify-between">
-                    <div className="flex items-center">
-                      <span className={`w-6 h-6 rounded-full flex items-center justify-center text-xs font-bold mr-3 ${
-                        index === 0 ? 'bg-yellow-500 text-white' :
-                        index === 1 ? 'bg-gray-400 text-white' :
-                        'bg-orange-500 text-white'
-                      }`}>
-                        {player.rank}
-                      </span>
-                      <span className="font-medium text-gray-900">{player.name}</span>
-                    </div>
-                    <span className="font-bold text-secondary-600">{player.score}</span>
-                  </div>
-                ))}
-              </div>
-            </div>
-
-            {/* All-Time Best */}
-            <div className="bg-gradient-to-br from-accent-50 to-accent-100 rounded-2xl p-6">
-              <h3 className="text-xl font-semibold text-gray-900 mb-4 flex items-center">
-                <Star className="w-5 h-5 mr-2 text-accent-600" />
-                All-Time Best
-              </h3>
-              <div className="space-y-3">
-                {[
-                  { name: 'Dr. Sarah Chen', score: 45680, rank: 1 },
-                  { name: 'Alex Rodriguez', score: 42340, rank: 2 },
-                  { name: 'Marcus Johnson', score: 39890, rank: 3 }
-                ].map((player, index) => (
-                  <div key={player.rank} className="flex items-center justify-between">
-                    <div className="flex items-center">
-                      <span className={`w-6 h-6 rounded-full flex items-center justify-center text-xs font-bold mr-3 ${
-                        index === 0 ? 'bg-yellow-500 text-white' :
-                        index === 1 ? 'bg-gray-400 text-white' :
-                        'bg-orange-500 text-white'
-                      }`}>
-                        {player.rank}
-                      </span>
-                      <span className="font-medium text-gray-900">{player.name}</span>
-                    </div>
-                    <span className="font-bold text-accent-600">{player.score}</span>
-                  </div>
-                ))}
-              </div>
-            </div>
-          </div>
-        </div>
-      </section>
-
-      {/* Benefits Section */}
-      <section className="py-20 bg-gradient-to-r from-accent-50 to-primary-50">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          <div className="text-center mb-16">
-            <h2 className="text-4xl font-bold text-gray-900 mb-6">
-              Why Play AI Games?
-            </h2>
-            <p className="text-xl text-gray-600 max-w-3xl mx-auto">
-              Have fun while developing essential AI and problem-solving skills
-            </p>
-          </div>
-
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8">
-            <div className="text-center">
-              <div className="w-16 h-16 bg-gradient-to-br from-primary-500 to-primary-600 rounded-2xl flex items-center justify-center mx-auto mb-4">
-                <Brain className="w-8 h-8 text-white" />
-              </div>
-              <h3 className="text-xl font-semibold text-gray-900 mb-3">Mental Agility</h3>
-              <p className="text-gray-600">Keep your mind sharp with challenging puzzles and brain teasers</p>
-            </div>
-
-            <div className="text-center">
-              <div className="w-16 h-16 bg-gradient-to-br from-secondary-500 to-secondary-600 rounded-2xl flex items-center justify-center mx-auto mb-4">
-                <Target className="w-8 h-8 text-white" />
-              </div>
-              <h3 className="text-xl font-semibold text-gray-900 mb-3">Skill Development</h3>
-              <p className="text-gray-600">Improve your AI, logic, and problem-solving abilities</p>
-            </div>
-
-            <div className="text-center">
-              <div className="w-16 h-16 bg-gradient-to-br from-accent-500 to-accent-600 rounded-2xl flex items-center justify-center mx-auto mb-4">
-                <Trophy className="w-8 h-8 text-white" />
-              </div>
-              <h3 className="text-xl font-semibold text-gray-900 mb-3">Competition</h3>
-              <p className="text-gray-600">Compete with others and climb the leaderboards</p>
-            </div>
-
-            <div className="text-center">
-              <div className="w-16 h-16 bg-gradient-to-br from-success-500 to-success-600 rounded-2xl flex items-center justify-center mx-auto mb-4">
-                <Zap className="w-8 h-8 text-white" />
-              </div>
-              <h3 className="text-xl font-semibold text-gray-900 mb-3">Quick Learning</h3>
-              <p className="text-gray-600">Learn AI concepts through interactive gameplay</p>
-            </div>
-          </div>
-        </div>
-      </section>
-
+      {showCodeGame && (
+        <CodeChallengeGame
+          onComplete={(score, time) => handleGameComplete(score, time, 'Code Challenge')}
+          onClose={() => setShowCodeGame(false)}
+        />
+      )}
+      {showPersonalityGame && (
+        <PersonalityGame
+          onComplete={handlePersonalityComplete}
+          onClose={() => setShowPersonalityGame(false)}
+        />
+      )}
+      {showCodeBattleGame && (
+        <CodeBattleGame
+          onComplete={(score, time) => handleGameComplete(score, time, 'Code Battle')}
+          onClose={() => setShowCodeBattleGame(false)}
+        />
+      )}
       <Footer />
     </div>
   )

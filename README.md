@@ -328,3 +328,4 @@ This project is licensed under the **MIT License** - see the [LICENSE](LICENSE) 
 **Built with ❤️ by the TalentAI Team**
 
 *Empowering the future of AI talent acquisition*
+
