@@ -1,0 +1,159 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&family=Poppins:wght@300;400;500;600;700;800;900&family=JetBrains+Mono:wght@300;400;500;600;700&display=swap');
+
+@layer base {
+  html {
+    scroll-behavior: smooth;
+  }
+  
+  body {
+    @apply bg-neutral-50 text-neutral-900 font-sans;
+    font-feature-settings: 'rlig' 1, 'calt' 1;
+  }
+  
+  * {
+    @apply border-neutral-200;
+  }
+}
+
+@layer components {
+  .btn-primary {
+    @apply bg-gradient-to-r from-primary-500 to-primary-600 hover:from-primary-600 hover:to-primary-700 text-white font-semibold py-3 px-6 rounded-xl transition-all duration-300 transform hover:scale-105 hover:shadow-glow active:scale-95;
+  }
+  
+  .btn-secondary {
+    @apply bg-gradient-to-r from-secondary-500 to-secondary-600 hover:from-secondary-600 hover:to-secondary-700 text-white font-semibold py-3 px-6 rounded-xl transition-all duration-300 transform hover:scale-105 hover:shadow-glow active:scale-95;
+  }
+  
+  .btn-accent {
+    @apply bg-gradient-to-r from-accent-500 to-accent-600 hover:from-accent-600 hover:to-accent-700 text-white font-semibold py-3 px-6 rounded-xl transition-all duration-300 transform hover:scale-105 hover:shadow-glow active:scale-95;
+  }
+  
+  .btn-outline {
+    @apply border-2 border-primary-500 text-primary-600 hover:bg-primary-500 hover:text-white font-semibold py-3 px-6 rounded-xl transition-all duration-300 transform hover:scale-105 active:scale-95;
+  }
+  
+  .btn-ghost {
+    @apply text-neutral-600 hover:text-primary-600 hover:bg-primary-50 font-medium py-2 px-4 rounded-lg transition-all duration-200;
+  }
+  
+  .card {
+    @apply bg-white rounded-2xl shadow-lg hover:shadow-xl transition-all duration-300 border border-neutral-100;
+  }
+  
+  .card-hover {
+    @apply card hover:scale-105 hover:shadow-glow;
+  }
+  
+  .input-field {
+    @apply w-full px-4 py-3 border border-neutral-300 rounded-xl focus:ring-2 focus:ring-primary-500 focus:border-transparent transition-all duration-200 bg-white;
+  }
+  
+  .input-field:focus {
+    @apply outline-none;
+  }
+  
+  .gradient-text {
+    @apply bg-gradient-to-r from-primary-600 via-secondary-600 to-accent-600 bg-clip-text text-transparent;
+  }
+  
+  .glass-effect {
+    @apply bg-white/80 backdrop-blur-md border border-white/20 shadow-xl;
+  }
+  
+  .hero-gradient {
+    background: linear-gradient(135deg, #0ea5e9 0%, #d946ef 50%, #f97316 100%);
+  }
+  
+  .floating-animation {
+    animation: float 6s ease-in-out infinite;
+  }
+  
+  .glow-effect {
+    box-shadow: 0 0 20px rgba(14, 165, 233, 0.3);
+  }
+  
+  .glow-effect:hover {
+    box-shadow: 0 0 40px rgba(14, 165, 233, 0.5);
+  }
+}
+
+@layer utilities {
+  .text-balance {
+    text-wrap: balance;
+  }
+  
+  .scrollbar-hide {
+    -ms-overflow-style: none;
+    scrollbar-width: none;
+  }
+  
+  .scrollbar-hide::-webkit-scrollbar {
+    display: none;
+  }
+  
+  .animate-float {
+    animation: float 6s ease-in-out infinite;
+  }
+  
+  .animate-glow {
+    animation: glow 2s ease-in-out infinite alternate;
+  }
+}
+
+/* Custom scrollbar */
+::-webkit-scrollbar {
+  width: 8px;
+}
+
+::-webkit-scrollbar-track {
+  @apply bg-neutral-100;
+}
+
+::-webkit-scrollbar-thumb {
+  @apply bg-neutral-300 rounded-full;
+}
+
+::-webkit-scrollbar-thumb:hover {
+  @apply bg-neutral-400;
+}
+
+/* Selection styles */
+::selection {
+  @apply bg-primary-200 text-primary-900;
+}
+
+/* Focus styles */
+.focus-visible:focus {
+  @apply outline-none ring-2 ring-primary-500 ring-offset-2;
+}
+
+/* Loading spinner */
+.spinner {
+  @apply animate-spin rounded-full border-4 border-neutral-200 border-t-primary-500;
+}
+
+/* Pulse animation for notifications */
+.pulse-notification {
+  animation: pulse 2s cubic-bezier(0.4, 0, 0.6, 1) infinite;
+}
+
+/* Custom animations */
+@keyframes shimmer {
+  0% {
+    background-position: -200px 0;
+  }
+  100% {
+    background-position: calc(200px + 100%) 0;
+  }
+}
+
+.shimmer {
+  background: linear-gradient(90deg, #f0f0f0 25%, #e0e0e0 50%, #f0f0f0 75%);
+  background-size: 200px 100%;
+  animation: shimmer 1.5s infinite;
+}
+
